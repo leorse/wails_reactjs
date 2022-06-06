@@ -1,44 +1,40 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import './style.css'
-import App from './App'
+import ph75 from './assets/images/75.png'
+//import App from './App'
 import MyCompo from './myCompo'
 
-
-function Button(props:any) {
-    
-
-    const handleClick = () => {
-        props.onClickFunction( props.increment)
-    }
-
-    return <button onClick={handleClick}> +{props.increment}</button>;
+interface IState {
+    title: string;
 }
 
-function Display(props:any) {
-    return (<div>{props.message}</div>)
+class Card extends React.Component {
+    render() {
+        return (
+            <div className='github-profile'>
+                <img src={ph75} />
+                <div className="info">
+                    <div className="name">Name here...</div>
+                    <div className="company">Company here...</div>
+                </div>
+            </div>
+        );
+    }
 }
 
-function SmallApp() {
-    const [counter, setCounter] = useState(42);
-    const incrementCounter = (inc:number) => {
-        setCounter(counter + inc)
+class App extends React.Component<IState> {
+    render() {
+        return (
+            <div>
+                <div className="header">{this.props.title}</div>
+                <Card />
+            </div>
+        );
     }
-    return (<div>
-        <App />
-        <MyCompo />
-        <Button onClickFunction={incrementCounter} increment={1}/>
-        <Button onClickFunction={incrementCounter} increment={5}/>
-        <Button onClickFunction={incrementCounter} increment={10}/>
-        <Button onClickFunction={incrementCounter} increment={100}/>
-
-        <Display message={counter}/>
-    </div>);
 }
 
 ReactDOM.render(
-    <React.StrictMode>
-        <SmallApp />
-    </React.StrictMode>,
+    <App title="From github" />,
     document.getElementById('root')
-)
+);
