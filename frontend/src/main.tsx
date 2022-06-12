@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
+import axios from 'axios'
 import './style.css'
 import ph75 from './assets/images/75.png'
 //import App from './App'
@@ -21,7 +22,7 @@ const testData: infoCardz[] = [
 const CardList = (props: any) => (
     <div>
 
-        {props.profile.map((profile: infoCardz) => { return (<Card {...profile} />) })}
+        {props.profile.map((profile: infoCardz) => { return (<Card key={profile.id} {...profile} />) })}
     </div>
 );
 
@@ -43,9 +44,11 @@ class Card extends React.Component<infoCardz> {
 
 class Form extends React.Component {
     state = {userName:''};
-    handleSubmit = (event: React.FormEvent) => {
+    handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log(this.state.userName)
+        const resp  =await axios.get(`https://api.github.com/users/${this.state.userName}`);
+        this.props.onSubmit(resp.data)
+        this.setState({userName:''});
     }
     render() {
         return (
@@ -63,13 +66,17 @@ interface IState {
 
 class App extends React.Component<IState> {
     state = {
-        profiles: testData
+        profiles: []
+    }
+
+    addNewProfile = (profileData:any) => {
+        this.setState(prevState => ({profiles:[...prevState.profiles, profileData]}));
     }
     render() {
         return (
             <div>
                 <div className="header">{this.props.title}</div>
-                <Form />
+                <Form onSubmit={this.addNewProfile}/>
                 <CardList profile={this.state.profiles} />
             </div>
         );
